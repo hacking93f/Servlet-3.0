@@ -9,6 +9,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
 
+
+
+// necessita driver sql jdbc + javax mail + activation(per javax mail)
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -124,7 +127,7 @@ public class RecuperoPwd extends HttpServlet {
 				//sogetto email
 				String subject = "Java send mail example";
 				//corpo email
-				String body =  "La tua password è : "+recPwd ;
+				String body =  "La tua password Ã¨ : "+recPwd ;
 				
 				
 				
