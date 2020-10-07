@@ -59,7 +59,7 @@ public class Register extends HttpServlet {
 		// TODO Auto-generated method stub
 		response.getWriter().append("Username o email non corretti");
 		
-		
+		//prendi i paramentri dal html
 		String uname = request.getParameter("uname");
 		String psw = request.getParameter("psw");
 		getMail = request.getParameter("email");
@@ -69,9 +69,9 @@ public class Register extends HttpServlet {
 			Class.forName("org.postgresql.Driver");
 		 
 		
-		String nm="user";
-		String ps="falsarone";
-		String url="jdbc:postgresql://localhost:5432/dab";
+		String nm="nome utente db";
+		String ps="password";
+		String url="jdbc:postgresql://localhost:5432/nome database";
 		
 		conn = DriverManager.getConnection(url, nm, ps);
 		
@@ -79,7 +79,8 @@ public class Register extends HttpServlet {
 		
 		
 		//login
-		String sql = "INSERT INTO utenti VALUES (?,?)";
+			//uso il prepared statement per prevenzione al sql inject
+		String sql = "INSERT INTO nome tabella VALUES (?,?)";
 		
 		PreparedStatement st= conn.prepareStatement(sql);
 		st.setString(1, uname);
@@ -116,10 +117,10 @@ public class Register extends HttpServlet {
 
 			RequestDispatcher rq = request.getRequestDispatcher("index.html");
 			rq.forward(request, response);
-		} //qui inserisci che c'è stato un errore ;)
+		} //qui inserisci che c'Ã¨ stato un errore ;)
 		
 		//naturalmente se cattura gli errori class not foun e sql excpetion va nel blocco catch 
-		//quindi per l errore usernm gia esistente è stato sufficente fare csi ;)
+		//quindi per l errore usernm gia esistente Ã¨ stato sufficente fare csi ;)
 		
 		
 		} catch (ClassNotFoundException | SQLException e) {
@@ -129,7 +130,7 @@ public class Register extends HttpServlet {
 				try {
 					
 					//creare una pagina apposta per l'errore username e password gia esistenti?? 
-					//cmq vabbè per adesso ti lascio questo 
+					//cmq vabbÃ¨ per adesso ti lascio questo 
 					response.sendRedirect("Errore.jsp");
 
 					conn.rollback();
