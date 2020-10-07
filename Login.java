@@ -1,5 +1,8 @@
 package com;
 
+
+//necessita il package postegresql jdbc 
+
 import java.beans.Statement;
 import java.io.IOException;
 import java.sql.Connection;
