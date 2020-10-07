@@ -14,7 +14,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
+//necessita postgre sql jdbc
 /**
  * Servlet implementation class Register
  register system created by hacking93f, Neo0Hacker 
