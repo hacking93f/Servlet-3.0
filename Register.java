@@ -17,6 +17,19 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * Servlet implementation class Register
+ register system created by hacking93f, Neo0Hacker 
+ all right reserved .
+ for more information contact me at hacking93f@gmail.com
+ 
+ 
+ sistema di registrazione con metodo di controllo sintassi mail Boolean tramite espressione Regolare 
+ questo sistema di registrazione crea una tabella per il recupero password 
+ nome tabella sara il nome utente con i campi password + mail
+ 
+ cosi che alla richiesta possiamo consultare piu facilmente il database e recuperare la password di quel determinato utente
+ controllando che sia allegata alla sua email , cosi la password può essere inviata solamente alla mail associata alla password ;)
+ 
+ 
  */
 @WebServlet("/register")
 public class Register extends HttpServlet {
