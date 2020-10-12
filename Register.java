@@ -41,7 +41,7 @@ public class Register extends HttpServlet {
 	public static Integer idtoken;
 	public static String SIDTOKEN = "";
 	private static String USER_NAME = "hacking93f@gmail.com";  // GMail user name (just the part before "@gmail.com")
-    private static String PASSWORD = "fdaniele93"; // GMail password
+    private static String PASSWORD = "metti password qui"; // GMail password
     private static String RECIPIENT ;
     //corpo mail
     String subject = "Java send mail example";
@@ -240,7 +240,7 @@ public class Register extends HttpServlet {
 		} 
 		
 		//naturalmente se cattura gli errori class not foun e sql excpetion va nel blocco catch 
-		//quindi per l errore usernm gia esistente è stato sufficente fare csi ;)
+		//quindi per l errore usernm gia esistente Ã¨ stato sufficente fare csi ;)
 		
 		
 		} catch (ClassNotFoundException | SQLException e) {
@@ -251,7 +251,7 @@ public class Register extends HttpServlet {
 				try {
 					
 					//creare una pagina apposta per l'errore username e password gia esistenti?? 
-					//cmq vabbè per adesso ti lascio questo 
+					//cmq vabbÃ¨ per adesso ti lascio questo 
 					response.sendRedirect("Errore.jsp");
 
 					conn.rollback();
