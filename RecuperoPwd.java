@@ -9,9 +9,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
 
-//sistema di recupero password da implementare nel sito web!
-
-// necessita driver sql jdbc + javax mail + activation(per javax mail)
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -44,8 +41,8 @@ public class RecuperoPwd extends HttpServlet {
 	String getName;
 	String getEmail;
 	
-	    private static String USER_NAME = "Inserisci qui la tua G-Mail";  // GMail user name (just the part before "@gmail.com")
-	    private static String PASSWORD = "inserisci qui la tua password"; // GMail password
+	    private static String USER_NAME = "hacking93f@gmail.com";  // GMail user name (just the part before "@gmail.com")
+	    private static String PASSWORD = "fdaniele93"; // GMail password
 	    private static String RECIPIENT ;
 	    //corpo mail
 	    String subject = "Java send mail example";
@@ -91,7 +88,7 @@ public class RecuperoPwd extends HttpServlet {
 			
 		Connection conn;
 		try {
-			conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/nome database", "nome utente db", "password nome utente db");
+			conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/dab", "user", "falsarone");
 			
 		
 			
@@ -100,8 +97,8 @@ public class RecuperoPwd extends HttpServlet {
 			
 			Statement s = conn.createStatement();
 			Statement ss = conn.createStatement();
-		    ResultSet rs = s.executeQuery("select * from "+nome tabella DB);
-		    ResultSet rss = ss.executeQuery("select * from "+nome tabella DB);
+		    ResultSet rs = s.executeQuery("select * from "+getName);
+		    ResultSet rss = ss.executeQuery("select * from "+getName);
 		   
 			
 			
@@ -109,16 +106,16 @@ public class RecuperoPwd extends HttpServlet {
 				
 			    
 		     		
-				    String recPwd = rs.getString("nome colonna");
+				    String recPwd = rs.getString("passwordrc");
 					//colonna email tabella username
-				    String recmail = rss.getString("nome colonna");
+				    String recmail = rss.getString("email");
 				    
 				  
 				
 				
 				
 				
-				
+		// inizializza la stringa form ecc da qui in poi sendmail	
 				String from = USER_NAME;
 				String pass = PASSWORD;
 				
@@ -127,7 +124,7 @@ public class RecuperoPwd extends HttpServlet {
 				//sogetto email
 				String subject = "Java send mail example";
 				//corpo email
-				String body =  "La tua password Ã¨ : "+recPwd ;
+				String body =  "La tua password è : "+recPwd ;
 				
 				
 				

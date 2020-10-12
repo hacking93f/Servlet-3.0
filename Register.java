@@ -8,35 +8,48 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.regex.Pattern;
+
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-//necessita postgre sql jdbc
+
+import java.util.Properties;
+import java.util.Random;
+
+
 /**
  * Servlet implementation class Register
- register system created by hacking93f, Neo0Hacker 
- all right reserved .
- for more information contact me at hacking93f@gmail.com
- 
- 
- sistema di registrazione con metodo di controllo sintassi mail Boolean tramite espressione Regolare 
- questo sistema di registrazione crea una tabella per il recupero password 
- nome tabella sara il nome utente con i campi password + mail
- 
- cosi che alla richiesta possiamo consultare piu facilmente il database e recuperare la password di quel determinato utente
- controllando che sia allegata alla sua email , cosi la password può essere inviata solamente alla mail associata alla password ;)
- 
- 
  */
 @WebServlet("/register")
 public class Register extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	
+	
 	Connection conn;
 
 	String getMail;
+	public static Integer idtoken;
+	public static String SIDTOKEN = "";
+	private static String USER_NAME = "hacking93f@gmail.com";  // GMail user name (just the part before "@gmail.com")
+    private static String PASSWORD = "fdaniele93"; // GMail password
+    private static String RECIPIENT ;
+    //corpo mail
+    String subject = "Java send mail example";
+    String body = "Welcome to JavaMail!";
+    String from ;
+    String pass;
+    String[] to;
+	
        
     /**
      * @see HttpServlet#HttpServlet()
@@ -47,6 +60,55 @@ public class Register extends HttpServlet {
     }
     
     
+    
+    //sendmail per email di conferma
+    
+	 private static void sendFromGMail(String from, String pass, String[] to, String subject, String body) {
+	        Properties props = System.getProperties();
+	        String host = "smtp.gmail.com";
+	        props.put("mail.smtp.starttls.enable", "true");
+	        props.put("mail.smtp.host", host);
+	        props.put("mail.smtp.user", from);
+	        props.put("mail.smtp.password", pass);
+	        props.put("mail.smtp.port", "587");
+	        props.put("mail.smtp.auth", "true");
+
+	        Session session = Session.getDefaultInstance(props);
+	        MimeMessage message = new MimeMessage(session);
+
+	        try {
+	            message.setFrom(new InternetAddress(from));
+	            InternetAddress[] toAddress = new InternetAddress[to.length];
+
+	            // To get the array of addresses
+	            for( int i = 0; i < to.length; i++ ) {
+	                toAddress[i] = new InternetAddress(to[i]);
+	            }
+
+	            for( int i = 0; i < toAddress.length; i++) {
+	                message.addRecipient(Message.RecipientType.TO, toAddress[i]);
+	            }
+
+	            message.setSubject(subject);
+	            message.setText(body);
+	            Transport transport = session.getTransport("smtp");
+	            transport.connect(host, from, pass);
+	            transport.sendMessage(message, message.getAllRecipients());
+	            transport.close();
+	        }
+	        catch (AddressException ae) {
+	            ae.printStackTrace();
+	        }
+	        catch (MessagingException me) {
+	            me.printStackTrace();
+	        }
+	    
+	
+	
+	
+}
+    
+    
     //Espressione Regolare Controllo Email--------------------
 	public static boolean isValid(String a) {
 		
@@ -55,7 +117,7 @@ public class Register extends HttpServlet {
 				"(?:[a-zA-Z0-9-]+\\.)+[a-z"+
 		"A-Z]{2,7}$";
 				
-		Pattern pat = Pattern.compile(emailRegex);
+		Pattern pat = Pattern.compile(emailRegex);//ho messo regex che sta per reg expression
 		if(a == null)
 	
 		
@@ -72,19 +134,44 @@ public class Register extends HttpServlet {
 		// TODO Auto-generated method stub
 		response.getWriter().append("Username o email non corretti");
 		
-		//prendi i paramentri dal html
+		
+		//inizializiamo il nostro fantomatico id token xD
+		
+		
+		Random randidtoken = new Random();
+		idtoken = randidtoken.nextInt(100000000-9000000) - 900000;//il range del id token, x non sforare le 10 cifre
+		SIDTOKEN = idtoken.toString();
+		
+		
+		
 		String uname = request.getParameter("uname");
 		String psw = request.getParameter("psw");
+		//speriamo che non da l errore in caso in cui non da l errore mi devo ricordare di togliere commento
 		getMail = request.getParameter("email");
 		String getpsw_repeat = request.getParameter("psw-repeat");
+		
+		// inizializza la stringa form ecc-sendmail
+		from = USER_NAME;
+		pass = PASSWORD;
+		
+//		prendi info dal html
+		to = request.getParameterValues("email");
+		//sogetto email
+		subject = "Java send mail example";
+		//corpo email
+		body =  "inserisci questo codice per confermare la tua email: "+idtoken;
+		
+		sendFromGMail(from,pass,to,subject,body);
+		
+		
 		
 		try {
 			Class.forName("org.postgresql.Driver");
 		 
 		
-		String nm="nome utente db";
-		String ps="password";
-		String url="jdbc:postgresql://localhost:5432/nome database";
+		String nm="user";
+		String ps="falsarone";
+		String url="jdbc:postgresql://localhost:5432/dab";
 		
 		conn = DriverManager.getConnection(url, nm, ps);
 		
@@ -92,34 +179,47 @@ public class Register extends HttpServlet {
 		
 		
 		//login
-			//uso il prepared statement per prevenzione al sql inject
-		String sql = "INSERT INTO nome tabella VALUES (?,?)";
+		String sql = "INSERT INTO utenti VALUES (?,?)";
 		
 		PreparedStatement st= conn.prepareStatement(sql);
 		st.setString(1, uname);
 		st.setString(2, psw);
 		int a = st.executeUpdate();
 		
+		//se qualcosa va storto conn.rollback() del paradigma acid in poche parole o tutto va bene o niente modifiche al db
 		if(getpsw_repeat.contentEquals(psw) && isValid(getMail)) { 
 			
 			
+			
+			
+			//impostiamo qui il famoso fantomatico idtoken per identificare la sessione
+			
+			Login.session = request.getSession();
+			Login.session.setAttribute("idtoken", SIDTOKEN);
+			Login.session.setAttribute("isgood", "notgood");
+
+			
+			
 		    //tabella recupero password db nome colonna passwordrc
-			//a fine progetto settare not null la query delll email
+			//a fine progetto settare not null la query dell email
             String qry = "CREATE TABLE "+uname+" (\r\n"
             		+ "   email VARCHAR ( 255 ) PRIMARY KEY,\r\n"
-            		+ "   passwordrc character(20)"
+            		+ "   passwordrc character(20) not null,\r\n"
+            		+ "   image_id VARCHAR(20) not null,\r\n"
+            		+ "   emailchk character(1)"
             		+ " )";
             
             
-            
-         
 	          
 	         Statement stt = conn.createStatement();
 	         stt.execute(qry);
-	         String qry2 = "INSERT INTO "+uname+" VALUES (?,?)";
+	         String qry2 = "INSERT INTO "+uname+" VALUES (?,?,?,?)";
 	         PreparedStatement sst = conn.prepareStatement(qry2);
 	        sst.setString(1, getMail);
 	        sst.setString(2, psw);
+	        //qui impostiamo l immagine di profilo di default nel database
+	        sst.setString(3, "uimages/Rem.png");
+	        sst.setString(4, "n");
 	        
 	        
 	        sst.execute();
@@ -127,23 +227,31 @@ public class Register extends HttpServlet {
 
 			conn.commit();
 			
+			//qui ce le settiamo per la sessione cosi da mandarci direttamente nella pagina da loggato
+			
+			Login.session.setAttribute("username", uname);
+			Login.session.setAttribute("userimages", "uimages/Rem.png");
+			Login.session.setMaxInactiveInterval(180);
 
-			RequestDispatcher rq = request.getRequestDispatcher("index.html");
+			RequestDispatcher rq = request.getRequestDispatcher("controller.jsp");
 			rq.forward(request, response);
-		} //qui inserisci che c'è stato un errore ;)
+			
+			
+		} 
 		
 		//naturalmente se cattura gli errori class not foun e sql excpetion va nel blocco catch 
-		//quindi per l errore usernm gia esistente è stato sufficente fare csi ;)
+		//quindi per l errore usernm gia esistente � stato sufficente fare csi ;)
 		
 		
 		} catch (ClassNotFoundException | SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			//nel blocco catch condizione per il roll back ;)
 			if(conn != null) {
 				try {
 					
 					//creare una pagina apposta per l'errore username e password gia esistenti?? 
-					//cmq vabbè per adesso ti lascio questo 
+					//cmq vabb� per adesso ti lascio questo 
 					response.sendRedirect("Errore.jsp");
 
 					conn.rollback();
@@ -152,23 +260,10 @@ public class Register extends HttpServlet {
 					e1.printStackTrace();
 				}
 				
-				
-				
-			
 			}
-			
-			
-			
-			
 			
 		}
 		
-		
-		
-		
-		
-		
-
 	}
 
 	/**

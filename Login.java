@@ -1,8 +1,5 @@
 package com;
 
-
-//necessita il package postegresql jdbc 
-
 import java.beans.Statement;
 import java.io.IOException;
 import java.sql.Connection;
@@ -18,7 +15,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
+import java.util.Random;
 import org.apache.tomcat.jni.User;
 
 
@@ -67,43 +64,49 @@ public class Login extends HttpServlet {
 		
 		String qr = "select * from utenti where username=? and password=?";
 		
-		
-		
-		
-		
-		
+				
+
 		PreparedStatement s = conn.prepareStatement(qr);
-        
-		 
+        java.sql.Statement st = conn.createStatement();
+        ResultSet rss = st.executeQuery("SELECT image_id FROM "+getName); //ottieni tutta la colonna (ma il db è strutturato per avere un solo dato in questa tabella ;)
+		java.sql.Statement stchk = conn.createStatement();
+		ResultSet rschk = stchk.executeQuery("select emailchk from "+getName);
 		
 		s.setString(1, getName);
 		s.setString(2, getPs);
-		ResultSet rs = s.executeQuery();
+		ResultSet rs = s.executeQuery();//scorri i dati nel db
 		
 		//condizione che controlla se l'username e password sono presenti nel database 
 		
-		if(rs.next()) {
+		if(rs.next() && rss.next() && rschk.next()) {
 
 			
        
 			session = request.getSession();
 
-      
+            String userimages = rss.getString("image_id");//ottieni Stringa nella colonna
             session.setAttribute("username", getName);
-            session.setMaxInactiveInterval(400);
-            
+            session.setMaxInactiveInterval(600);
+            session.setAttribute("userimages", userimages);
+         
+            String mailchk = rschk.getString("emailchk");
             
          
-   	    	RequestDispatcher rd = request.getRequestDispatcher("index.jsp");
-   		    rd.forward(request, response);
-
-   		
-
 			System.out.println("[0]logged");
 			System.out.println("[1]Sessione Abilitata !");
 			System.out.println("[2]Cookie non abilitati");
 			
-			
+			 if (mailchk.contentEquals("s")) {
+				 
+				 session.setAttribute("chkusername", getName);
+		         
+		   	    	RequestDispatcher rd = request.getRequestDispatcher("index.jsp");
+		   		    rd.forward(request, response);
+		   		    
+
+		            }else {
+		            	response.sendRedirect("erroremail.jsp");
+		            }
 
 			
 		}else {
@@ -116,7 +119,8 @@ public class Login extends HttpServlet {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 
-			
+			response.sendRedirect("Errorenouser.jsp");
+
 		}
 		
 	
