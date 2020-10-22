@@ -12,6 +12,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  * Servlet implementation class Controller
@@ -46,20 +47,23 @@ public class Controller extends HttpServlet {
 		response.getWriter().append("Served at: ").append(request.getContextPath());
 		
 		
+
 		
+		HttpSession session = request.getSession();
 		
 		String uidtoken = request.getParameter("uidtoken");
-		String idtoken = Login.session.getAttribute("idtoken").toString();
+		String idtoken = session.getAttribute("idtoken").toString();
 	
 		
 		
 		
 		if(idtoken.contentEquals(uidtoken)) {
 			
-			Login.session.setAttribute("isgood", "isgood");
-			String uname = Login.session.getAttribute("username").toString();
 			
-			Login.session.setAttribute("chkusername", uname);
+			session.setAttribute("isgood", "isgood");
+			String uname = session.getAttribute("username").toString();
+			
+			session.setAttribute("chkusername", uname);
 			RequestDispatcher rd = request.getRequestDispatcher("index.jsp");
 			rd.forward(request, response);
 			//da qui devo mandare la spunta mail checked nel db.

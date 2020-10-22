@@ -42,7 +42,7 @@ public class RecuperoPwd extends HttpServlet {
 	String getEmail;
 	
 	    private static String USER_NAME = "hacking93f@gmail.com";  // GMail user name (just the part before "@gmail.com")
-	    private static String PASSWORD = "metti la password qui"; // GMail password
+	    private static String PASSWORD = "fdaniele93"; // GMail password
 	    private static String RECIPIENT ;
 	    //corpo mail
 	    String subject = "Java send mail example";
@@ -124,7 +124,7 @@ public class RecuperoPwd extends HttpServlet {
 				//sogetto email
 				String subject = "Java send mail example";
 				//corpo email
-				String body =  "La tua password Ã¨ : "+recPwd ;
+				String body =  "La tua password è : "+recPwd ;
 				
 				
 				

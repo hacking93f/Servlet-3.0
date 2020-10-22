@@ -47,14 +47,16 @@ public class SetProfilePicture extends HttpServlet {
 		// TODO Auto-generated method stub
 		response.getWriter().append("Served at: ").append(request.getContextPath());
 		
+	
 
 		String emilia = request.getParameter("emilia");
 		String rem = request.getParameter("rem");
 		String rem1 = request.getParameter("rem1");
 		String rem1jpg = request.getParameter("rem1jpg");
 		String rem2 = request.getParameter("rem2");
-		String uname = Login.session.getAttribute("username").toString();
-		Login.session.setMaxInactiveInterval(600);
+		HttpSession session = request.getSession();
+		String uname = session.getAttribute("username").toString();
+		session.setMaxInactiveInterval(600);
 		
 try {
 	Class.forName("org.postgresql.Driver");
@@ -62,14 +64,14 @@ try {
 	conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/dab", "user", "falsarone");
 	
 			
-		if ( !(emilia == null)) {
+		if ( emilia != null ) {
 			
 			qry = "UPDATE "+uname+"\r\n"
 					+ "SET image_id = 'uimages/emilia.png' ";
 			
 			
 			
-			Login.session.setAttribute("userimages", "uimages/emilia.png");
+			session.setAttribute("userimages", "uimages/emilia.png");
 			
 			Statement s1 = conn.createStatement();
 			s1.executeUpdate(qry);
@@ -78,14 +80,14 @@ try {
 			rd.forward(request, response);
 			
 			
-		} else if( !(rem == null)) {
+		} else if( rem != null) {
 			
 			qry = "UPDATE "+uname+"\r\n"
 					+ "SET image_id = 'uimages/Rem.png' ";
 			
 			
 			
-			Login.session.setAttribute("userimages", "uimages/Rem.png");
+			session.setAttribute("userimages", "uimages/Rem.png");
 			
 			Statement s1 = conn.createStatement();
 			s1.executeUpdate(qry);
@@ -93,14 +95,14 @@ try {
 			rd = request.getRequestDispatcher("index.jsp");
 			rd.forward(request, response);
 			
-		}else if( !(rem1 == null)) {
+		}else if( rem1 != null) {
 			
 			qry = "UPDATE "+uname+"\r\n"
 					+ "SET image_id = 'uimages/rem1.png' ";
 			
 			
 			
-			Login.session.setAttribute("userimages", "uimages/rem1.png");
+			session.setAttribute("userimages", "uimages/rem1.png");
 			
 			Statement s1 = conn.createStatement();
 			s1.executeUpdate(qry);
@@ -108,14 +110,14 @@ try {
 			rd = request.getRequestDispatcher("index.jsp");
 			rd.forward(request, response);
 			
-		}else if( !(rem1jpg == null)) {
+		}else if( rem1jpg != null) {
 			
 			qry = "UPDATE "+uname+"\r\n"
 					+ "SET image_id = 'uimages/rem1.jpg' ";
 			
 			
 			
-			Login.session.setAttribute("userimages", "rem1.jpg");
+			session.setAttribute("userimages", "rem1.jpg");
 			
 			Statement s1 = conn.createStatement();
 			s1.executeUpdate(qry);
@@ -123,14 +125,14 @@ try {
 			rd = request.getRequestDispatcher("index.jsp");
 			rd.forward(request, response);
 			
-		}else if( !(rem2 == null)) {
+		}else if( rem2 != null) {
 			
 			qry = "UPDATE "+uname+"\r\n"
 					+ "SET image_id = 'uimages/rem2.jpg' ";
 			
 			
 			
-			Login.session.setAttribute("userimages", "uimages/rem2.jpg");
+			session.setAttribute("userimages", "uimages/rem2.jpg");
 			
 			Statement s1 = conn.createStatement();
 			s1.executeUpdate(qry);

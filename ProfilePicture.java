@@ -11,16 +11,17 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 /**
- * Servlet implementation class LoggedRedirect
+ * Servlet implementation class ProfilePicture
  */
-@WebServlet("/loggedredirect")
-public class LoggedRedirect extends HttpServlet {
+@WebServlet("/profilepicture")
+public class ProfilePicture extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public LoggedRedirect() {
+    public ProfilePicture() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -32,30 +33,15 @@ public class LoggedRedirect extends HttpServlet {
 		// TODO Auto-generated method stub
 		response.getWriter().append("Served at: ").append(request.getContextPath());
 		
-		try {
-		HttpSession session = request.getSession();
-	
-		String chkusername = session.getAttribute("chkusername").toString();
 		
-		RequestDispatcher rd = request.getRequestDispatcher("index.jsp");
+		request.getSession();
+
+		
+		RequestDispatcher rd = request.getRequestDispatcher("profilePicture.jsp");
 		rd.forward(request, response);
-		
-		
-		}catch(NullPointerException | IllegalStateException |ServletException| IOException e) {
-			
-			
-			response.sendRedirect("login-register.jsp");
-			
-		}
 		
 	}
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
-	}
+	
 
 }

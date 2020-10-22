@@ -22,6 +22,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import java.util.Properties;
 import java.util.Random;
@@ -38,10 +39,13 @@ public class Register extends HttpServlet {
 	Connection conn;
 
 	String getMail;
+	//i fantomatici id token
 	public static Integer idtoken;
 	public static String SIDTOKEN = "";
+	
+	
 	private static String USER_NAME = "hacking93f@gmail.com";  // GMail user name (just the part before "@gmail.com")
-    private static String PASSWORD = "metti password qui"; // GMail password
+    private static String PASSWORD = "fdaniele93"; // GMail password
     private static String RECIPIENT ;
     //corpo mail
     String subject = "Java send mail example";
@@ -146,7 +150,6 @@ public class Register extends HttpServlet {
 		
 		String uname = request.getParameter("uname");
 		String psw = request.getParameter("psw");
-		//speriamo che non da l errore in caso in cui non da l errore mi devo ricordare di togliere commento
 		getMail = request.getParameter("email");
 		String getpsw_repeat = request.getParameter("psw-repeat");
 		
@@ -184,7 +187,7 @@ public class Register extends HttpServlet {
 		PreparedStatement st= conn.prepareStatement(sql);
 		st.setString(1, uname);
 		st.setString(2, psw);
-		int a = st.executeUpdate();
+		st.executeUpdate();
 		
 		//se qualcosa va storto conn.rollback() del paradigma acid in poche parole o tutto va bene o niente modifiche al db
 		if(getpsw_repeat.contentEquals(psw) && isValid(getMail)) { 
@@ -193,10 +196,12 @@ public class Register extends HttpServlet {
 			
 			
 			//impostiamo qui il famoso fantomatico idtoken per identificare la sessione
+			HttpSession session = request.getSession();
+
 			
-			Login.session = request.getSession();
-			Login.session.setAttribute("idtoken", SIDTOKEN);
-			Login.session.setAttribute("isgood", "notgood");
+			session = request.getSession();
+			session.setAttribute("idtoken", SIDTOKEN);
+			session.setAttribute("isgood", "notgood");
 
 			
 			
@@ -205,7 +210,7 @@ public class Register extends HttpServlet {
             String qry = "CREATE TABLE "+uname+" (\r\n"
             		+ "   email VARCHAR ( 255 ) PRIMARY KEY,\r\n"
             		+ "   passwordrc character(20) not null,\r\n"
-            		+ "   image_id VARCHAR(20) not null,\r\n"
+            		+ "   image_id VARCHAR(40) not null,\r\n"
             		+ "   emailchk character(1)"
             		+ " )";
             
@@ -228,10 +233,10 @@ public class Register extends HttpServlet {
 			conn.commit();
 			
 			//qui ce le settiamo per la sessione cosi da mandarci direttamente nella pagina da loggato
-			
-			Login.session.setAttribute("username", uname);
-			Login.session.setAttribute("userimages", "uimages/Rem.png");
-			Login.session.setMaxInactiveInterval(180);
+		
+			session.setAttribute("username", uname);
+			session.setAttribute("userimages", "uimages/Rem.png");
+			session.setMaxInactiveInterval(180);
 
 			RequestDispatcher rq = request.getRequestDispatcher("controller.jsp");
 			rq.forward(request, response);
@@ -240,7 +245,7 @@ public class Register extends HttpServlet {
 		} 
 		
 		//naturalmente se cattura gli errori class not foun e sql excpetion va nel blocco catch 
-		//quindi per l errore usernm gia esistente Ã¨ stato sufficente fare csi ;)
+		//quindi per l errore usernm gia esistente è stato sufficente fare csi ;)
 		
 		
 		} catch (ClassNotFoundException | SQLException e) {
@@ -251,7 +256,7 @@ public class Register extends HttpServlet {
 				try {
 					
 					//creare una pagina apposta per l'errore username e password gia esistenti?? 
-					//cmq vabbÃ¨ per adesso ti lascio questo 
+					//cmq vabbè per adesso ti lascio questo 
 					response.sendRedirect("Errore.jsp");
 
 					conn.rollback();

@@ -1,6 +1,5 @@
 package com;
 
-import java.beans.Statement;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -11,12 +10,13 @@ import java.sql.SQLException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.util.Random;
-import org.apache.tomcat.jni.User;
+
+
 
 
 /**
@@ -31,9 +31,6 @@ public class Login extends HttpServlet {
 	static String passwo;
 	static String getName;
 	static String getPs;
-	static HttpSession session;
-
-	
 	
     /**
      * @see HttpServlet#HttpServlet()
@@ -82,15 +79,14 @@ public class Login extends HttpServlet {
 
 			
        
-			session = request.getSession();
+		    HttpSession	session = request.getSession();
 
             String userimages = rss.getString("image_id");//ottieni Stringa nella colonna
             session.setAttribute("username", getName);
             session.setMaxInactiveInterval(600);
             session.setAttribute("userimages", userimages);
-         
             String mailchk = rschk.getString("emailchk");
-            
+           
          
 			System.out.println("[0]logged");
 			System.out.println("[1]Sessione Abilitata !");
@@ -101,8 +97,8 @@ public class Login extends HttpServlet {
 				 session.setAttribute("chkusername", getName);
 		         
 		   	    	RequestDispatcher rd = request.getRequestDispatcher("index.jsp");
+		   	    	
 		   		    rd.forward(request, response);
-		   		    
 
 		            }else {
 		            	response.sendRedirect("erroremail.jsp");
