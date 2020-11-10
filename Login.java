@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 
-
+//il login e register in realta in un vero progetto si un sito wen, devono essere passati tramite post, cosi che non vengano visualizati i parametri nella quey dell url!!
 
 /**
  * Servlet implementation class Login
@@ -65,7 +65,7 @@ public class Login extends HttpServlet {
 
 		PreparedStatement s = conn.prepareStatement(qr);
         java.sql.Statement st = conn.createStatement();
-        ResultSet rss = st.executeQuery("SELECT image_id FROM "+getName); //ottieni tutta la colonna (ma il db è strutturato per avere un solo dato in questa tabella ;)
+        ResultSet rss = st.executeQuery("SELECT image_id FROM "+getName); //ottieni tutta la colonna (ma il db Ã¨ strutturato per avere un solo dato in questa tabella ;)
 		java.sql.Statement stchk = conn.createStatement();
 		ResultSet rschk = stchk.executeQuery("select emailchk from "+getName);
 		
